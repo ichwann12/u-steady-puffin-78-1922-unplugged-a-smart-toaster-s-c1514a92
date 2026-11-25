@@ -11,8 +11,11 @@ import { fileURLToPath } from "node:url";
 const here = dirname(fileURLToPath(import.meta.url));
 const entry = readFileSync(join(here, "entry.txt"), "utf8").trim();
 
+// Output dir: prefer MAKEFUN_BOT_DIR, then MAKEFUN_OUTPUT_DIR, else ./output.
+// Using || (not ??) so an env var set to an empty string falls through
+// instead of mkdirSync("") failing.
 const outDir =
-  process.env.MAKEFUN_BOT_DIR ?? process.env.MAKEFUN_OUTPUT_DIR ?? join(here, "output");
+  process.env.MAKEFUN_BOT_DIR || process.env.MAKEFUN_OUTPUT_DIR || join(here, "output");
 
 mkdirSync(outDir, { recursive: true });
 writeFileSync(join(outDir, "output.txt"), entry + "\n", "utf8");
